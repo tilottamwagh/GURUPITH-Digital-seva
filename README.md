@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gurupith WhatsApp Analytics
 
-## Getting Started
+A responsive dashboard for monitoring incoming WhatsApp conversations stored in Supabase. Includes live refresh, message search, date range filtering, activity summaries, and a persistent light/dark theme.
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Next.js 16 App Router and React 19
+- TypeScript
+- Tailwind CSS 4 (with custom dashboard styling)
+- Supabase REST API
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Requirements
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 20 or newer
+- A Supabase project with a `public.whatsapp_bot_messages` table
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The table should include `id`, `whatsapp_mobile`, `profile_name`, `message_type`, `message_text`, `message_timestamp`, and `direction` columns. The dashboard queries incoming rows and displays up to the latest 500 matching messages.
 
-## Learn More
+## Setup
 
-To learn more about Next.js, take a look at the following resources:
+1. Install dependencies:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. Copy `.env.example` to `.env.local` and set your Supabase project URL and service role key. Keep `.env.local` private and never commit it.
 
-## Deploy on Vercel
+3. Start the development server:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4. Open [http://localhost:3000](http://localhost:3000).
+
+## Available scripts
+
+- `npm run dev` — start the development server
+- `npm run build` — create a production build
+- `npm run start` — serve a production build
+- `npm run lint` — run ESLint
+
+## Data and access
+
+The analytics API reads Supabase on the server and sends the service role key only in server-side requests. The dashboard endpoint itself is not an authentication system. Add access control before exposing this app to the public internet, and use a restricted database role where possible.
+
+The summary cards are calculated from the current result set. When no date range is selected, that set is capped at 500 recent messages, so the cards are not all-time totals.
